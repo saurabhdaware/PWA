@@ -44,3 +44,21 @@ self.addEventListener('fetch',(event) =>{
         })
     )
 })
+
+
+self.addEventListener('fetch',function(e){
+    let request = e.request;
+    e.respondWith(
+        fetch(request)
+        .then(function(res){
+            return caches.open(DYNAMIC_CACHE)
+            .then(function(cache){
+                cache.put(request.url,res.clone());
+                return res;
+            })
+        })
+        .catch(function(err){
+            return caches.match(request);
+        })
+    )
+})
